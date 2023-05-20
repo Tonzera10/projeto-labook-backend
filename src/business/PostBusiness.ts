@@ -42,4 +42,13 @@ export class PostBusiness {
         )
         await this.postDatabase.createPost(newPost);
     }
+
+    public deletePost = async (id: string): Promise<void> => {
+        const postDB = await this.postDatabase.findById(id);
+        if (!postDB) {
+            throw new NotFoundError();
+        }
+        
+        await this.postDatabase.deletePost(id);
+    }
 }

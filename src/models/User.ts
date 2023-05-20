@@ -9,7 +9,6 @@ export interface UserDB {
     email: string,
     password: string,
     role: USER_ROLE,
-    created_at: Date,
 }
 
 export class User {
@@ -18,8 +17,7 @@ export class User {
         private name: string,
         private email: string,
         private password: string,
-        private role: USER_ROLE,
-        private created_at: Date
+        private role: USER_ROLE,  
     ) { }
     
     public getId(): string{
@@ -60,13 +58,5 @@ export class User {
 
     public setRole(value: USER_ROLE): void{
         this.role = value;
-    }
-
-    public getCreatedAt(): string{
-        return this.created_at.toISOString();
-    }
-
-    public setCreatedAt(value: Date): void{
-        this.created_at = value;
     }
 }

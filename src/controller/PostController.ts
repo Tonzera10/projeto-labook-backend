@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express'
+import { Request, Response } from 'express'
 import { PostBusiness } from '../business/PostBusiness';
 import { ZodError } from 'zod';
 import { BaseError } from '../error/BaseError';
@@ -55,6 +55,24 @@ export class PostController {
         await this.postBusiness.createPost(input)
 
         res.status(201).send("Post criado com sucesso");
+      } catch (error) {
+        if (error instanceof ZodError) {
+          res.status(400).send(error.issues);
+        } else if (error instanceof BaseError) {
+          res.status(error.statusCode).send(error.message);
+        } else {
+          res.status(500).send("Erro inesperado");
+        }
+      }
+    }
+
+    public deletePost = async (req: Request, res: Response): Promise<void> =>{
+      try {
+        const {id} = req.params
+        
+        await this.postBusiness.deletePost(id)
+
+        res.status(204).send("Post deletado com sucesso");
       } catch (error) {
         if (error instanceof ZodError) {
           res.status(400).send(error.issues);
