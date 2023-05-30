@@ -1,11 +1,11 @@
-import { Post, PostDB } from "../models/Post";
+import { PostDB } from "../models/Post";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class PostDatabase extends BaseDatabase {
     private TABLE_NAME = "posts";
 
-    public findAllPosts = async (): Promise<PostDB[]> => {
-        return await BaseDatabase.connection(this.TABLE_NAME)
+    public getAllPosts = async (q:string): Promise<PostDB[]> => {
+        return await BaseDatabase.connection(this.TABLE_NAME).where({q})
     }
 
     public findById = async (id: string): Promise<PostDB | undefined> => {
@@ -13,21 +13,21 @@ export class PostDatabase extends BaseDatabase {
         return postDB
     }
 
-    public createPost = async (input: Post): Promise<void> => {
+    public createPost = async (input: PostDB): Promise<void> => {
         await BaseDatabase.connection(this.TABLE_NAME).insert(({
-            id: input.getId(),
-            creator_id: input.getCreatorId(),
-            content: input.getContent()
+            id: input.id,
+            creator_id: input.creator_id,
+            content: input.content
         }))
     }
 
-    public editPost = async (input: Post): Promise<void> => {
+    public editPost = async (input: PostDB): Promise<void> => {
         await BaseDatabase.connection(this.TABLE_NAME)
         .update({
-            content: input.getContent()
+            content: input.content
         })
         .where({
-            id: input.getId()
+            id: input.id
         })
     }
 

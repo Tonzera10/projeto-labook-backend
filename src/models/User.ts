@@ -1,4 +1,4 @@
-export enum USER_ROLE {
+export enum USER_ROLES {
     ADMIN = 'admin',
     NORMAL = 'normal'
 }
@@ -8,7 +8,14 @@ export interface UserDB {
     name: string,
     email: string,
     password: string,
-    role: USER_ROLE,
+    role: USER_ROLES,
+    created_at: string,
+}
+
+export interface TokenPayload {
+    id: string,
+	name: string,
+    role: USER_ROLES
 }
 
 export class User {
@@ -17,7 +24,8 @@ export class User {
         private name: string,
         private email: string,
         private password: string,
-        private role: USER_ROLE,  
+        private role: USER_ROLES,  
+        private createdAt: string
     ) { }
     
     public getId(): string{
@@ -52,11 +60,19 @@ export class User {
         this.password = value;
         }
 
-    public getRole(): USER_ROLE{
+    public getRole(): USER_ROLES{
         return this.role;
     }
 
-    public setRole(value: USER_ROLE): void{
+    public setRole(value: USER_ROLES): void{
         this.role = value;
     }
+
+    public getCreatedAt(): string{
+        return this.createdAt;
+        }
+
+    public setCreatedAt(value: string): void{
+        this.createdAt = value;
+        }
 }

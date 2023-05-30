@@ -2,13 +2,21 @@ import { Request, Response } from 'express'
 import { PostBusiness } from '../business/PostBusiness';
 import { ZodError } from 'zod';
 import { BaseError } from '../error/BaseError';
+import {EditPostSchema} from '../dtos/postDTO/editPost.dto'
+import { DeletePostSchema } from '../dtos/postDTO/deletePost.dto';
+import { GetPostSchema } from '../dtos/postDTO/getPost.dto';
 
 export class PostController {
     constructor(private postBusiness: PostBusiness) {}
 
-    public findAllPosts = async (req: Request, res: Response):Promise<void> => {
+    public getAllPosts = async (req: Request, res: Response):Promise<void> => {
         try {
-            const result = await this.postBusiness.findAllPosts()
+            const input = GetPostSchema.parse({
+              q: req.query.q,
+              token: req.headers.authorization
+            })
+
+            const result = await this.postBusiness.getAllPosts(input)
 
             res.status(200).send(result);
         } catch (error) {
@@ -24,11 +32,11 @@ export class PostController {
 
     public editPost = async (req: Request, res: Response):Promise<void> => {
       try {
-        const input = {
+        const input = EditPostSchema.parse({
           id: req.params.id,
           creator_id: req.body.creator_id,
           content: req.body.content
-        }
+        })
 
         await this.postBusiness.editPost(input)
 
@@ -47,7 +55,6 @@ export class PostController {
     public createPost = async (req: Request, res: Response):Promise<void> => {
       try {
         const input = {
-          id: req.body.id,
           creator_id: req.body.creator_id,
           content: req.body.content
         }
@@ -68,9 +75,11 @@ export class PostController {
 
     public deletePost = async (req: Request, res: Response): Promise<void> =>{
       try {
-        const {id} = req.params
+        const input = DeletePostSchema.parse({
+          id: req.params.id
+        })
         
-        await this.postBusiness.deletePost(id)
+        await this.postBusiness.deletePost(input)
 
         res.status(204).send("Post deletado com sucesso");
       } catch (error) {

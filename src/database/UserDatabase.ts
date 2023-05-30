@@ -5,6 +5,11 @@ import { BaseDatabase } from "./BaseDatabase";
 export class UserDatabase extends BaseDatabase {
     private TABLE_NAME = "users"
 
+    public getAllUsers = async (): Promise<UserDB[]> => {
+        const userDB = await BaseDatabase.connection(this.TABLE_NAME)
+        return userDB
+    }
+
     public findById = async (id: string): Promise<UserDB | undefined> => {
         const [userDB] = await BaseDatabase.connection(this.TABLE_NAME).where({id})
         return userDB
@@ -15,13 +20,11 @@ export class UserDatabase extends BaseDatabase {
         return userDB
     }
     
-    public signupUser = async (input: User):Promise<void> => {
+    public signupUser = async (input: UserDB):Promise<void> => {
         await BaseDatabase.connection(this.TABLE_NAME).insert({
-            id: input.getId(),
-            name: input.getName(),
-            email: input.getEmail(),
-            password: input.getPassword(),
-            role: input.getRole()
+            name: input.name,
+            email: input.email,
+            password: input.password
         })
     }
 }
