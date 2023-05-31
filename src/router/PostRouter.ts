@@ -11,7 +11,6 @@ export const postRouter = express.Router()
 const postController = new PostController(
     new PostBusiness(
         new PostDatabase(),
-        new UserDatabase(),
         new IdGenerator(),
         new TokenManager()
 

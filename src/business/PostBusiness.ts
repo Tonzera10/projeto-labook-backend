@@ -12,7 +12,7 @@ import { GetPostInputDTO, GetPostOutputDTO } from "../dtos/postDTO/getPost.dto";
 import { AlreadyExistError } from "../error/AlreadyExist";
 import { BadRequestError } from "../error/BadRequestError";
 import { NotFoundError } from "../error/NotFoundError";
-import { Post, PostDB } from "../models/Post";
+import { FormaterPost, Post, PostDB } from "../models/Post";
 import { USER_ROLES, User } from "../models/User";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager } from "../services/TokenManager";
@@ -20,81 +20,57 @@ import { TokenManager } from "../services/TokenManager";
 export class PostBusiness {
   constructor(
     private postDatabase: PostDatabase,
-    private userDatabase: UserDatabase,
     private idGenerator: IdGenerator,
     private tokenManager: TokenManager
   ) {}
 
-  public getAllPosts = async (input: GetPostInputDTO): Promise<any> => {
-    const { q, token } = input;
+  public getAllPosts = async (input: GetPostInputDTO): Promise<GetPostOutputDTO[]> => {
+    const { q } = input;
 
-    const payload = this.tokenManager.getPayload(token);
+    // const payload = this.tokenManager.getPayload(token);
 
-    if (payload === null) {
-      throw new BadRequestError("token inválido");
-    }
+    // if (payload === null) {
+    //   throw new BadRequestError("token inválido");
+    // }
 
-    if (payload.role !== USER_ROLES.ADMIN) {
-        throw new BadRequestError("somente admins podem acessar esse recurso")
-    }
+    // if (payload.role !== USER_ROLES.ADMIN) {
+    //     throw new BadRequestError("somente admins podem acessar esse recurso")
+    // }
 
     const postDB = await this.postDatabase.getAllPosts(q);
 
-    const resultPost: Post[] = postDB.map(
-      (post) =>
-        new Post(
-          post.id,
-          post.creator_id,
-          post.content,
-          post.likes,
-          post.dislikes,
-          post.created_at,
-          post.updated_at
-        )
-    );
-    const resultPostDB = resultPost.map((post) => {
-      post.getId(),
-        post.getContent(),
-        post.getLikes(),
-        post.getDislikes(),
-        post.getCreatedAt(),
-        post.getUpdatedAt();
-    });
+    // const resultPost: Post[] = postDB.map(
+    //   (post: any) =>
+    //     new Post(
+    //       post.id,
+    //       post.creator_id,
+    //       post.content,
+    //       post.likes,
+    //       post.dislikes,
+    //       post.created_at,
+    //       post.updated_at
+    //     )
+    // );
 
-    const userDB = await this.userDatabase.getAllUsers();
-    const resultUser: User[] = userDB.map(
-      (user) =>
-        new User(
-          user.id,
-          user.name,
-          user.email,
-          user.password,
-          user.role,
-          user.created_at
-        )
-    );
-    const resultUserDB = resultUser.map((user) => {
-      user.getId(), user.getName();
-    });
+    console.log(postDB)
 
-    const result = {
-      posts: resultPostDB,
-      users: resultUserDB,
-    };
+    const output: GetPostOutputDTO[] = postDB.map((post: any) => {
+      return{
+        id: post.id,
+        constent: post.content,
+        likes: post.likes,
+        dislikes: post.dislikes,
+        createdAt: post.created_at,
+        updatedAt: post.updated_at,
+        creator: {
+            id: post.creator_id,
+            name: post.name,
+        }
+      }
+        
+    })
 
-    // const output: GetPostOutputDTO[] = result.map((post) => {
-    //     id: post.getId(),
-    //     content: post.getContent(),
-    //     likes: post.getLikes(),
-    //     dislikes: post.getDislikes(),
-    //     created_at: post.getCreatedAt(),
-    //     updated_at: post.getUpdatedAt(),
-    //     creator: {
-    //         id: post.getCreatorId(),
-    //         name: post.getId()
-    //     }
-    // })
-    return result;
+    return output;
   };
 
   public editPost = async (

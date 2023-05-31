@@ -57,7 +57,7 @@ export class UserBusiness {
 
     const output: SignupOutputDTO = {
       message: "Cadastro realizado  com sucesso!",
-      token: token,
+      // token: token,
     };
 
     return output;

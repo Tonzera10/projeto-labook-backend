@@ -13,13 +13,14 @@ export class PostController {
         try {
             const input = GetPostSchema.parse({
               q: req.query.q,
-              token: req.headers.authorization
+              // token: req.headers.authorization
             })
 
             const result = await this.postBusiness.getAllPosts(input)
 
             res.status(200).send(result);
         } catch (error) {
+            console.log(error)
             if (error instanceof ZodError) {
                 res.status(400).send(error.issues);
               } else if (error instanceof BaseError) {

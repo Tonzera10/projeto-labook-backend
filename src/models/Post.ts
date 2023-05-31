@@ -8,6 +8,19 @@ export interface PostDB {
   updated_at: string;
 }
 
+export interface FormaterPost {
+    id: string,
+    content: string,
+    likes: number,
+    dislikes: number,
+    createdAt: string,
+    updatedAt: string,
+    creator: {
+        id: string,
+        name: string
+    }
+}
+
 export class Post {
   constructor(
     private id: string,

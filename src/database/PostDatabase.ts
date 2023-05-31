@@ -4,8 +4,17 @@ import { BaseDatabase } from "./BaseDatabase";
 export class PostDatabase extends BaseDatabase {
     private TABLE_NAME = "posts";
 
-    public getAllPosts = async (q:string): Promise<PostDB[]> => {
-        return await BaseDatabase.connection(this.TABLE_NAME).where({q})
+    public getAllPosts = async (q:string | undefined): Promise<any> => {
+
+        if (!q){
+            return await BaseDatabase.connection(this.TABLE_NAME)
+        .innerJoin("users", "users.id", "=", "posts.creator_id")
+        } else {
+            return await BaseDatabase.connection(this.TABLE_NAME)
+        .innerJoin("users", "users.id", "=", "posts.creator_id")
+        .where(`${q}`, "=", "posts.content")
+        }
+        
     }
 
     public findById = async (id: string): Promise<PostDB | undefined> => {
