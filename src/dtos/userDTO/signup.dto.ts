@@ -7,8 +7,7 @@ export interface SignupInputDTO {
 }
 
 export interface SignupOutputDTO {
-  message: string;
-  // token: string;
+  token: string;
 }
 
 export const SignupSchema = z

@@ -1,15 +1,16 @@
 import z from "zod";
 
-export interface DeletePostInputDTO {
-  idToDelete: string;
+export interface likeOrDislikeInputDTO {
+  postId: string;
   token: string;
+  like: boolean;
 }
 
-export type DeletePostOutputDTO = undefined;
+export type likeOrDislikeOutputDTO = undefined;
 
-export const DeletePostSchema = z
+export const LikeOrDislikeSchema = z
   .object({
-    idToDelete: z.string({
+    postId: z.string({
       required_error: "'id' é obrigatório",
       invalid_type_error: "'id' deve ser do tipo string",
     }),
@@ -19,5 +20,6 @@ export const DeletePostSchema = z
         invalid_type_error: "'token' deve ser do tipo string",
       })
       .min(1, "'token' deve possuir no mínimo 1 caractere"),
+    like: z.boolean(),
   })
-  .transform((data) => data as DeletePostInputDTO);
+  .transform((data) => data as likeOrDislikeInputDTO);

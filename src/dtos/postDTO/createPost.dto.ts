@@ -1,25 +1,20 @@
 import z from "zod";
 
-export interface EditPostInputDTO {
-  idToEdit: string;
+export interface CreatePostInputDTO {
   content: string;
   token: string;
 }
 
-export type EditPostOutputDTO = undefined;
+export type CreatePostOutputDTO = undefined;
 
-export const EditPostSchema = z
+export const CreatePostSchema = z
   .object({
-    idToEdit: z.string({
-      required_error: "'id' é obrigatório",
-      invalid_type_error: "'id' deve ser do tipo string",
-    }),
     content: z
       .string({
         required_error: "'comentário' é obrigatório",
         invalid_type_error: "'comentário' deve ser do tipo string",
       })
-      .min(1, "'comentário' deve possuir no mínimo 1 caractere"),
+      .min(1),
     token: z
       .string({
         required_error: "'token' é obrigatório",
@@ -27,4 +22,4 @@ export const EditPostSchema = z
       })
       .min(1, "'token' deve possuir no mínimo 1 caractere"),
   })
-  .transform((data) => data as EditPostInputDTO);
+  .transform((data) => data as CreatePostInputDTO);
